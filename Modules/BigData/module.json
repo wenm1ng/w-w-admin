@@ -1,0 +1,13 @@
+{
+    "name": "BigData",
+    "alias": "bigdata",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\BigData\\Providers\\BigDataServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

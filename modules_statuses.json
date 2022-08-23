@@ -1,0 +1,8 @@
+{
+    "Admin": true,
+    "Blog": true,
+    "BlogApi": true,
+    "BigData": true,
+    "Event": true,
+    "Test": true
+}
