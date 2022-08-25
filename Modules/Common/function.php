@@ -196,3 +196,28 @@ function adminLog(string $fileName, string $message, array $data = []){
         ->info($message, $data);
 }
 
+/**
+ * @desc       以某个键值进行分组
+ * @author     文明<736038880@qq.com>
+ * @date       2022-08-25 9:34
+ * @param array  $arr
+ * @param        $groupKey
+ * @param string $beValKey
+ *
+ * @return array
+ */
+function arrayGroup(array $arr, $groupKey, $beValKey = '')
+{
+    $return = [];
+    if ($beValKey) {
+        foreach ($arr as $key => $val) {
+            $return[$val[$groupKey]][] = $val[$beValKey];
+        }
+    } else {
+        foreach ($arr as $key => $val) {
+            $return[$val[$groupKey]][] = $val;
+        }
+    }
+    return $return;
+}
+

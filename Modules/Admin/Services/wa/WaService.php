@@ -9,6 +9,7 @@ namespace Modules\Admin\Services\wa;
 
 use Modules\Admin\Models\Wa\WaImageModel;
 use Modules\Admin\Models\Wa\WaContentModel;
+use Modules\Admin\Models\Wa\WaTabTitleModel;
 use Modules\Admin\Services\BaseApiService;
 use Illuminate\Support\Facades\DB;
 
@@ -31,10 +32,10 @@ class WaService extends BaseApiService
         }
 
         $where['order'] = [
+            'update_at' => 'desc',
             'favorites_num' => 'desc',
             'likes_num' => 'desc',
             'read_num' => 'desc',
-            'id' => 'desc'
         ];
 
         $list = WaContentModel::baseQuery($where)
@@ -70,7 +71,7 @@ class WaService extends BaseApiService
      * @param array $info
      */
     public function mergeImage(int $id, array &$info){
-        $images = WaImageModel::query()->where('wa_id', $id)->pluck('image_url', 'id')->toArray();
+        $images = WaImageModel::query()->where('wa_id', $id)->select(DB::raw('image_url as url,id'))->get()->toArray();
         $info['images'] = $images;
     }
 
@@ -99,17 +100,25 @@ class WaService extends BaseApiService
      */
     public function add(array $data)
     {
+        if(empty($data['images'])){
+            $this->apiError('图片不能为空');
+        }
         $insertData = $this->filterArr($data, 'title,version,occupation,tips,type,data_from,status,tt_id,description,wa_content');
+        $this->getTypeByTtId($data['tt_id'], $insertData);
 
         try {
             DB::beginTransaction();
-            $productId = WaContentModel::query()->insertGetId($insertData);
-            $data['image_url'] = preg_replace("/(http|https):\/\/.*?\//", config('admin.http_url'), $data['image_url']);
-            $imageData = [[
-                'product_id' => $productId,
-                'image_url' => $data['image_url']
-            ]];
-            WaImageModel::query()->insert($imageData);
+            $waId = WaContentModel::query()->insertGetId($insertData);
+            foreach ($data['images'] as $image) {
+                $imageUrl = preg_replace("/(http|https):\/\/.*?\//", config('admin.http_url').'/', $image['url']);
+                $imageData[] = [
+                    'wa_id' => $waId,
+                    'image_url' => $imageUrl
+                ];
+            }
+            if(!empty($imageData)){
+                WaImageModel::query()->insert($imageData);
+            }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -118,5 +127,73 @@ class WaService extends BaseApiService
 
         return $this->apiSuccess();
 
+    }
+
+    /**
+     * @desc       修改wa
+     * @author     文明<736038880@qq.com>
+     * @date       2022-08-25 14:51
+     * @param array $data
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(array $data){
+
+        if(empty($data['images'])){
+            $this->apiError('图片不能为空');
+        }
+
+        $updateData = $this->filterArr($data, 'title,version,occupation,tips,tt_id,description,wa_content');
+        $this->getTypeByTtId($data['tt_id'], $updateData);
+        try {
+            DB::beginTransaction();
+            WaContentModel::query()->where('id', $data['id'])->update($updateData);
+
+            WaImageModel::query()->where('wa_id', $data['id'])->delete();
+            foreach ($data['images'] as $image) {
+                $imageUrl = preg_replace("/(http|https):\/\/.*?\//", config('admin.http_url').'/', $image['url']);
+                $imageData[] = [
+                    'wa_id' => $data['id'],
+                    'image_url' => $imageUrl
+                ];
+            }
+            if(!empty($imageData)){
+                WaImageModel::query()->insert($imageData);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->apiError($e->getMessage());
+        }
+
+        return $this->apiSuccess();
+    }
+
+    /**
+     * @desc       获取tab类型
+     * @author     文明<736038880@qq.com>
+     * @date       2022-08-25 14:56
+     * @param $ttId
+     * @param $data
+     */
+    private function getTypeByTtId($ttId, &$data){
+        if(empty($ttId)){
+            return;
+        }
+        $data['type'] = WaTabTitleModel::query()->where('id', $ttId)->value('type');
+    }
+
+    /**
+     * @desc       修改wa状态
+     * @author     文明<736038880@qq.com>
+     * @date       2022-08-25 15:05
+     * @param array $params
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function status(array $params){
+        WaContentModel::query()->where('id', $params['id'])->update(['status' => $params['status']]);
+
+        return $this->apiSuccess();
     }
 }

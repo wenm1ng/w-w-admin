@@ -14,4 +14,17 @@ Route::group(["prefix"=>"v1/admin","middleware"=>"AdminApiAuth"],function (){
     Route::get('wa/info', 'v1\Wa\WaController@info');
     //新增wa
     Route::post('wa/add', 'v1\Wa\WaController@add');
+    //修改wa
+    Route::post('wa/update', 'v1\Wa\WaController@update');
+    //修改wa状态
+    Route::post('wa/status', 'v1\Wa\WaController@status');
+
+    /***********************************公共数据接口************************************************/
+    //版本列表
+    Route::get('wa/version/list', 'v1\Wa\CommonController@getVersionList');
+    //职业列表
+    Route::get('wa/oc/list', 'v1\Wa\CommonController@getOcList');
+    //tab列表
+    Route::get('wa/tab/list', 'v1\Wa\CommonController@getTabList');
+
 });

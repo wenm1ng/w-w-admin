@@ -55,4 +55,33 @@ class WaController extends BaseApiController
             return (new WaService())->add($request->all());
         });
     }
+
+    /**
+     * @desc       修改wa
+     * @author     文明<736038880@qq.com>
+     * @date       2022-08-25 14:51
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public function update(Request $request){
+        return $this->apiResponse(function () use ($request) {
+            return (new WaService())->update($request->all());
+        });
+    }
+
+    /**
+     * @desc       修改状态
+     * @author     文明<736038880@qq.com>
+     * @date       2022-08-25 15:06
+     * @param Request $request
+     *
+     * @return mixed
+     */
+    public function status(Request $request){
+        return $this->apiResponse(function () use ($request) {
+            return (new WaService())->status($request->all());
+        });
+    }
+
 }
