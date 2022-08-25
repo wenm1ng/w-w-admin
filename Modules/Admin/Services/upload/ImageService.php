@@ -45,8 +45,8 @@ class ImageService extends BaseApiService
             if ($fileCharater->isValid()){
                 $imageStatus = AuthConfigModel::where('id',1)->value('image_status');
 //                if($imageStatus == 1){
-                $dir = $this->getFileDir($fileCharater->getClientOriginalExtension());
-                $uploadPath = $dir.'/'.date('Ymd');
+//                $dir = $this->getFileDir($fileCharater->getClientOriginalExtension());
+                $uploadPath = 'wa/'.date('Ymd');
                 $path = $request->file('file')->store($uploadPath,'upload');
                 if ($path){
                     $url = Config::FILE_ROOT.'/'.$path;
