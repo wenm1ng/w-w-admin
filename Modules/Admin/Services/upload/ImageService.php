@@ -49,7 +49,7 @@ class ImageService extends BaseApiService
                 $uploadPath = 'wa/'.date('Ymd');
                 $path = $request->file('file')->store($uploadPath,'upload');
                 if ($path){
-                    $url = Config::FILE_ROOT.'/'.$path;
+                    $url = config('admin.url_dir').'/'.$path;
                 }
 //                }else if($imageStatus == 2){
 //                    $url = $this->addQiniu($fileCharater);
@@ -63,7 +63,7 @@ class ImageService extends BaseApiService
                     ]);
                     if($image_id){
                         if($imageStatus == 1){
-                            $url = $this->getHttp().$url;
+                            $url = config('admin.http_url').$url;
                         }
                         return $this->apiSuccess('上传成功！',
                             [
