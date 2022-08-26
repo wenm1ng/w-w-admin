@@ -103,9 +103,7 @@ class WaService extends BaseApiService
         if(empty($data['images'])){
             $this->apiError('图片不能为空');
         }
-        var_dump($data);
         $insertData = $this->filterArr($data, 'title,version,occupation,tips,type,data_from,status,tt_id,description,wa_content');
-        var_dump($insertData);exit;
         $this->getTypeByTtId($data['tt_id'], $insertData);
 
         try {
