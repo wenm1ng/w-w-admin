@@ -103,7 +103,7 @@ class WaService extends BaseApiService
         if(empty($data['images'])){
             $this->apiError('图片不能为空');
         }
-        $insertData = $this->filterArr($data, 'title,version,occupation,tips,type,data_from,status,tt_id,description,wa_content');
+        $insertData = $this->filterArr($data, 'title,version,occupation,tips,type,data_from,status,tt_id,description,wa_content,origin_url');
         $this->getTypeByTtId($data['tt_id'], $insertData);
 
         try {
@@ -143,7 +143,7 @@ class WaService extends BaseApiService
             $this->apiError('图片不能为空');
         }
 
-        $updateData = $this->filterArr($data, 'title,version,occupation,tips,tt_id,description,wa_content');
+        $updateData = $this->filterArr($data, 'title,version,occupation,tips,tt_id,description,wa_content,origin_url');
         $this->getTypeByTtId($data['tt_id'], $updateData);
         try {
             DB::beginTransaction();
