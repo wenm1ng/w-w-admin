@@ -27,7 +27,14 @@ Route::group(["prefix"=>"v1/admin","middleware"=>"AdminApiAuth"],function (){
     //修改评论状态
     Route::post('wa/comment/status', 'v1\Wa\CommentController@status');
     /***********************************排行榜相关接口************************************************/
-    Route::get('wa/comment/rank', 'v1\Wa\RankController@list');
+    //排行榜列表
+    Route::post('wa/rank/list', 'v1\Wa\RankController@list');
+    //回答列表
+    Route::get('wa/answer/list', 'v1\Wa\RankController@getAnswerList');
+    //删除回答
+    Route::post('wa/answer/delete', 'v1\Wa\RankController@delAnswer');
+    //修改回答状态
+    Route::post('wa/answer/status', 'v1\Wa\RankController@answerStatus');
 
     /***********************************公共数据接口************************************************/
     //版本列表

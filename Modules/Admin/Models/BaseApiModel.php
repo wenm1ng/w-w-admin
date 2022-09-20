@@ -82,4 +82,14 @@ class BaseApiModel extends BaseModel
             ->toArray();
         return ['list' => $list['data'], 'total' => $list['total']];
     }
+
+    /**
+     * @desc       with用户表
+     * @author     文明<736038880@qq.com>
+     * @date       2022-09-17 15:53
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user_info(){
+        return $this->belongsTo('Modules\Admin\Models\Wa\UserModel','user_id','user_id');
+    }
 }

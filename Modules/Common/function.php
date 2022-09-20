@@ -221,3 +221,24 @@ function arrayGroup(array $arr, $groupKey, $beValKey = '')
     return $return;
 }
 
+function getWowWeekYear(string $dateTime){
+    $time = strtotime($dateTime);
+    $year = date('Y', $time);
+    $month = (int)date('m', $time);
+    $week = (int)date('W', $time);
+    if($week > 40 && $month == 1){
+        //第二年的头几天，当成前一年最后一周算
+        $year = $year - 1;
+    }
+    $yearLinkWeek = [
+        2021 => 1,
+        2022 => 1,
+        2023 => 1,
+        2024 => 1,
+        2025 => 1,
+        2026 => 0,
+    ];
+    $week = $week + $yearLinkWeek[$year];
+
+    return ['year' => $year, 'week' => $week];
+}
